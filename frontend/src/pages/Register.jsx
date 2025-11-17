@@ -1,19 +1,39 @@
 import { useState } from "react";
+import api from "../api";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Register() {
   const [type, setType] = useState("buyer"); // buyer | seller
   const [form, setForm] = useState({
     name: "",
+    email: "",
     company_name: "",
     password: "",
   });
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // TEMP: print to console (later we send to backend)
-    console.log("Registering as:", type);
-    console.log(form);
+    api.post("/register", {
+    role: type,
+    name: form.name,
+    email:form.email,
+    company_name: type === "seller" ? form.company_name : null,
+    password: form.password,
+  })
+    .then(res => {
+      console.log("REGISTERED:", res.data);
+      setSuccess(true);
+      setForm({ name: "", email: "", company_name: "", password: "" });
+    })
+    .catch(err => {
+      console.log(err.response?.data || err);
+      alert("Registration failed");
+    });
+
+
   };
 
   return (
@@ -50,6 +70,22 @@ export default function Register() {
           </button>
         </div>
 
+        {/* Success Message */}
+            <AnimatePresence>
+                {success && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="bg-green-100 text-green-700 p-3 rounded-xl flex justify-between items-center"
+                    >
+                        <span>User created successfully!</span>
+                        <button onClick={() => setSuccess(false)}>✖</button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -60,6 +96,17 @@ export default function Register() {
               type="text"
               required
               onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+            />
+          </div>
+
+           {/* Email field */}
+          <div>
+            <label className="block font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              required
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
             />
           </div>
@@ -96,6 +143,10 @@ export default function Register() {
             Register as {type === "buyer" ? "Buyer" : "Seller"}
           </button>
         </form>
+
+              <p className="text-center text-gray-600 text-sm">
+                  Already registered? <Link to="/login" className="text-blue-600">Login</Link>
+              </p>
       </div>
     </div>
   );
