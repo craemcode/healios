@@ -6,6 +6,8 @@ import viteLogo from '/vite.svg'
 import Home from './pages/Home'
 import Register from './pages/Register';
 import Login from './pages/Login';
+import BuyerHome from './pages/BuyerHome';
+import SellerHome from './pages/SellerHome';
 
 function App() {
   return(
@@ -16,6 +18,8 @@ function App() {
         {/* You will create these pages later */}
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
+        <Route path="/buyer/home" element={<BuyerHome/>}/>
+        <Route path="seller/home" element={<SellerHome/>}/>
         <Route path="/about" element={<h1>About Us</h1>} />
       </Routes>
     </BrowserRouter>
