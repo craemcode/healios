@@ -1,24 +1,22 @@
 import { useState,useEffect } from 'react'
+import {BrowserRouter, Routes, Route } from 'react-router-dom'
 import api from "./api";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
+import Home from './pages/Home'
 
 function App() {
-  const [message, setMessage] = useState("Loading...");
+  return(
+   <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-  useEffect(() => {
-    api.get("/ping").then(res => {
-      setMessage(res.data.message);
-    }).catch(err => {
-      setMessage("API error: " + err.message);
-    });
-  }, []);
-
-  return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h1>{message}</h1>
-    </div>
+        {/* You will create these pages later */}
+        <Route path="/login" element={<h1>Login Page</h1>} />
+        <Route path="/register" element={<h1>Register Page</h1>} />
+        <Route path="/about" element={<h1>About Us</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
