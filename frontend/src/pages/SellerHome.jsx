@@ -1,3 +1,38 @@
+import { useState } from "react";
+import { SellerNavbar } from "../components/SellerNavbar";
+import { SellerSidebar } from "../components/SellerSidebar";
+import {SellerFooter} from "../components/SellerFooter";
+import { SellerDashboard } from "../components/SellerDashboard";
+
+
+
+
 export default function SellerHome() {
-  return <h1 className="p-10 text-3xl">Welcome, Seller!</h1>;
+  const [current, setCurrent] = useState("dashboard");
+
+
+  return (
+    <div className="flex h-screen w-full overflow-hidden">
+      <SellerSidebar current={current} setCurrent={setCurrent} />
+
+
+      <div className="flex flex-col flex-1 overflow-y-auto">
+        <SellerNavbar />
+
+
+        <div className="flex-1 bg-gray-50">
+          {current === "dashboard" && <SellerDashboard />}
+          {current === "add-product" && (
+            <div className="p-6 text-gray-700 text-lg font-semibold">Add Product Page (coming soon)</div>
+          )}
+          {current === "sales" && (
+            <div className="p-6 text-gray-700 text-lg font-semibold">Sales Data Page (coming soon)</div>
+          )}
+        </div>
+
+
+        <SellerFooter />
+      </div>
+    </div>
+  );
 }
