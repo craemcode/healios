@@ -3,6 +3,7 @@ import { SellerNavbar } from "../components/SellerNavbar";
 import { SellerSidebar } from "../components/SellerSidebar";
 import {SellerFooter} from "../components/SellerFooter";
 import { SellerDashboard } from "../components/SellerDashboard";
+import AddProduct from "../components/AddProduct";
 
 
 
@@ -22,9 +23,7 @@ export default function SellerHome() {
 
         <div className="flex-1 bg-gray-50">
           {current === "dashboard" && <SellerDashboard />}
-          {current === "add-product" && (
-            <div className="p-6 text-gray-700 text-lg font-semibold">Add Product Page (coming soon)</div>
-          )}
+          {current === "add-product" && <AddProduct/>}
           {current === "sales" && (
             <div className="p-6 text-gray-700 text-lg font-semibold">Sales Data Page (coming soon)</div>
           )}
