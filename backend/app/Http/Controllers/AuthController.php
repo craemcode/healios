@@ -27,6 +27,7 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
+       
         return response()->json([
             'message' => 'User registered successfully!',
             'user' => $user
@@ -41,17 +42,25 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Invalid login credentials'
-            ], 401);
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid login'], 401);
         }
 
-        $user = Auth::user();
+        $token = $user->createToken('authToken')->plainTextToken;
 
+       
         return response()->json([
             'message' => 'Login successful',
-            'user' => $user
+            'user' => $user,
+            'token' => $token
         ]);
+    }
+
+    public function logout (Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out']);
     }
 }

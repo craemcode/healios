@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 
 class ProductController extends Controller
@@ -26,7 +27,7 @@ class ProductController extends Controller
 
         // Create product
         $product = Product::create([
-            'user_id' => auth()->id(),   // seller who is logged in
+            'user_id' => $request->user()->id,   // seller who is logged in
             'name' => $request->name,
             'category' => $request->category,
             'price' => $request->price,

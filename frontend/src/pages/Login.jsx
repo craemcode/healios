@@ -20,12 +20,16 @@ export default function Login() {
     setError("");
 
     try {
+
+      console.log("Sending request to:", api.defaults.baseURL);
+
       const res = await api.post("/login", {
         email: form.email,
         password: form.password,
       });
 
       const user = res.data.user;
+      localStorage.setItem("token", res.data.token);
 
       // ⭐ Role-based redirect
       if (user.role === "buyer") {
@@ -37,10 +41,13 @@ export default function Login() {
       }
 
     } catch (err) {
+      console.log("Error", err.response)
       setError(err.response?.data?.message || "Login failed");
+    }finally{
+        setLoading(false);
     }
 
-    setLoading(false);
+    
 
   };
 
