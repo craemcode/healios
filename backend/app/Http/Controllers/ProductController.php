@@ -40,16 +40,28 @@ class ProductController extends Controller
         ], 201);
     }
     public function index()
-{
-    $products = Product::with('seller')->latest()->get()->map(function ($product){
-        $product->photo_url = $product->photo_url;
-        return $product;
-    });
-    
+    {
+        $products = Product::with('seller')->latest()->get()->map(function ($product) {
+            $product->photo_url = $product->photo_url;
+            return $product;
+        });
 
-    return response()->json([
-        'products' => $products
-    ]);
-}
+
+        return response()->json([
+            'products' => $products
+        ]);
+    }
+
+    public function show($id)
+    {
+        $product = Product::with('seller')->findOrFail($id);
+
+        $product->photo_url = asset('storage/' . $product->image_path);
+
+        return response()->json([
+            'product' => $product
+        ]);
+    }
+
 
 }

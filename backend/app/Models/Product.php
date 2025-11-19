@@ -14,7 +14,8 @@ class Product extends Model
         'name',
         'category',
         'price',
-        'image_path'
+        'image_path',
+        'description'
     ];
 
     public function seller()
