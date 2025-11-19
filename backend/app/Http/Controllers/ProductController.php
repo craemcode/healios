@@ -39,4 +39,17 @@ class ProductController extends Controller
             'product' => $product
         ], 201);
     }
+    public function index()
+{
+    $products = Product::with('seller')->latest()->get()->map(function ($product){
+        $product->photo_url = $product->photo_url;
+        return $product;
+    });
+    
+
+    return response()->json([
+        'products' => $products
+    ]);
+}
+
 }

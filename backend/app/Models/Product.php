@@ -21,4 +21,9 @@ class Product extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function getPhotoUrlAttribute(){
+        return $this->image_path 
+        ? asset('storage/' . $this->image_path) : null;
+    }
 }
