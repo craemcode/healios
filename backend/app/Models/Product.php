@@ -14,11 +14,17 @@ class Product extends Model
         'name',
         'category',
         'price',
-        'image_path'
+        'image_path',
+        'description'
     ];
 
     public function seller()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getPhotoUrlAttribute(){
+        return $this->image_path 
+        ? asset('storage/' . $this->image_path) : null;
     }
 }
