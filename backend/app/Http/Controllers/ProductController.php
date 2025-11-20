@@ -109,20 +109,27 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
+        //validate the request
         $request->validate([
             'quantity' => 'required|integer|min:1',
             'unit_cost' => 'required|numeric|min:0',
         ]);
 
+        //record the stock movement
         $movement = $product->stockMovements()->create([
             'type' => 'restock',
             'quantity' => $request->quantity,
             'unit_cost' => $request->unit_cost,
         ]);
 
+        //update table
+        $product->stock += $request->quantity;
+        $product->save();
+
+
         return response()->json([
             'message' => 'Product restocked successfully',
-            'current_stock' => $product->current_stock,
+            'current_stock' => $product->stock,
             'movement' => $movement
         ]);
     }
