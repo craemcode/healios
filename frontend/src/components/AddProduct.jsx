@@ -6,7 +6,8 @@ export default function AddProduct() {
     name: "",
     category: "clinical",
     price: "",
-    photo: null,
+    description: "",
+    photo: null, 
   });
 
   const [success, setSuccess] = useState(false);
@@ -41,6 +42,7 @@ export default function AddProduct() {
       formData.append("name", form.name);
       formData.append("category", form.category);
       formData.append("price", form.price);
+      formData.append("description", form.description);
       formData.append("image", form.photo); // file key MUST match backend
 
       const res = await api.post("/products", formData, {
@@ -50,7 +52,7 @@ export default function AddProduct() {
       console.log(res.data);
       setSuccess(true);
 
-      setForm({ name: "", category: "clinical", price: "", photo: null });
+      setForm({ name: "", category: "clinical", price: "", description: "",photo: null });
 
     } catch (err) {
       console.log(err);
@@ -111,6 +113,20 @@ export default function AddProduct() {
             type="number"
             name="price"
             value={form.price}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+
+        {/* Description */}
+        <div>
+          <label className="block mb-1 text-gray-700 font-medium">Description</label>
+          <textarea
+            name="description"
+            value={form.description}
+            rows="5"
             onChange={handleChange}
             className="w-full p-2 border rounded"
             required

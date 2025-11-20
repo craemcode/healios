@@ -17,7 +17,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|in:clinical,electronics,sanitation',
             'price' => 'required|numeric|min:0',
-
+            'description' => 'required|string| max:2000',
             // File must be an image
             'image' => 'required|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -30,6 +30,7 @@ class ProductController extends Controller
             'user_id' => $request->user()->id,   // seller who is logged in
             'name' => $request->name,
             'category' => $request->category,
+            'description'=>$request->description,
             'price' => $request->price,
             'image_path' => $path,
         ]);
