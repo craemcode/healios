@@ -105,7 +105,46 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function restock(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'unit_cost' => 'required|numeric|min:0',
+        ]);
+
+        $movement = $product->stockMovements()->create([
+            'type' => 'restock',
+            'quantity' => $request->quantity,
+            'unit_cost' => $request->unit_cost,
+        ]);
+
+        return response()->json([
+            'message' => 'Product restocked successfully',
+            'current_stock' => $product->current_stock,
+            'movement' => $movement
+        ]);
+    }
+
+    public function stock($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return response()->json([
+            'product_id' => $product->id,
+            'current_stock' => $product->current_stock
+        ]);
+    }
 
 
+    public function stockHistory($id)
+    {
+        $product = Product::with('stockMovements')->findOrFail($id);
 
+        return response()->json([
+            'product' => $product,
+            'stock_history' => $product->stockMovements()->orderBy('created_at', 'desc')->get()
+        ]);
+    }
 }
