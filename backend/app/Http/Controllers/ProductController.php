@@ -63,5 +63,48 @@ class ProductController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Make sure only the owner (seller) can update
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // VALIDATION
+        $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'category' => 'sometimes|required|in:clinical,electronics,sanitation',
+            'price' => 'sometimes|required|numeric|min:0',
+            'description' => 'sometimes|nullable|string',
+            'image' => 'sometimes|file|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // UPDATE BASIC FIELDS
+        $product->update($request->only(['name', 'category', 'price', 'description']));
+
+        // HANDLE PHOTO UPLOAD IF NEW ONE PROVIDED
+        if ($request->hasFile('image')) {
+
+            // delete old image (optional)
+            if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+
+            // store new image
+            $path = $request->file('image')->store('products', 'public');
+            $product->image_path = $path;
+            $product->save();
+        }
+
+        return response()->json([
+            'message' => 'Product updated successfully!',
+            'product' => $product
+        ], 200);
+    }
+
+
+
 
 }
