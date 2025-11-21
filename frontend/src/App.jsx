@@ -9,6 +9,9 @@ import Login from './pages/Login';
 import BuyerHome from './pages/BuyerHome';
 import SellerHome from './pages/SellerHome';
 import ProductDetails from './pages/ProductDetails';
+import SellerProducts from './pages/SellerProducts';
+import SellerProductEdit from './pages/SellerProductEdit';
+
 
 function App() {
   return(
@@ -21,6 +24,10 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/buyer/home" element={<BuyerHome/>}/>
         <Route path="seller/home" element={<SellerHome/>}/>
+        <Route path="seller/products" element={<SellerProducts/>}/>
+        <Route path="seller/products/:id" element={<SellerProductEdit/>}/>
+
+
         <Route path="/product/:id" element={<ProductDetails/>}/>
 
 

@@ -17,7 +17,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|in:clinical,electronics,sanitation',
             'price' => 'required|numeric|min:0',
-
+            'description' => 'required|string| max:2000',
             // File must be an image
             'image' => 'required|file|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -30,6 +30,7 @@ class ProductController extends Controller
             'user_id' => $request->user()->id,   // seller who is logged in
             'name' => $request->name,
             'category' => $request->category,
+            'description'=>$request->description,
             'price' => $request->price,
             'image_path' => $path,
         ]);
@@ -63,5 +64,94 @@ class ProductController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
 
+        // Make sure only the owner (seller) can update
+        if ($product->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // VALIDATION
+        $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'category' => 'sometimes|required|in:clinical,electronics,sanitation',
+            'price' => 'sometimes|required|numeric|min:0',
+            'description' => 'sometimes|nullable|string',
+            'image' => 'sometimes|file|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // UPDATE BASIC FIELDS
+        $product->update($request->only(['name', 'category', 'price', 'description']));
+
+        // HANDLE PHOTO UPLOAD IF NEW ONE PROVIDED
+        if ($request->hasFile('image')) {
+
+            // delete old image (optional)
+            if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+
+            // store new image
+            $path = $request->file('image')->store('products', 'public');
+            $product->image_path = $path;
+            $product->save();
+        }
+
+        return response()->json([
+            'message' => 'Product updated successfully!',
+            'product' => $product
+        ], 200);
+    }
+
+    public function restock(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        //validate the request
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'unit_cost' => 'required|numeric|min:0',
+        ]);
+
+        //record the stock movement
+        $movement = $product->stockMovements()->create([
+            'type' => 'restock',
+            'quantity' => $request->quantity,
+            'unit_cost' => $request->unit_cost,
+        ]);
+
+        //update table
+        $product->stock += $request->quantity;
+        $product->save();
+
+
+        return response()->json([
+            'message' => 'Product restocked successfully',
+            'current_stock' => $product->stock,
+            'movement' => $movement
+        ]);
+    }
+
+    public function stock($id)
+    {
+        $product = Product::findOrFail($id);
+
+        return response()->json([
+            'product_id' => $product->id,
+            'current_stock' => $product->current_stock
+        ]);
+    }
+
+
+    public function stockHistory($id)
+    {
+        $product = Product::with('stockMovements')->findOrFail($id);
+
+        return response()->json([
+            'product' => $product,
+            'stock_history' => $product->stockMovements()->orderBy('created_at', 'desc')->get()
+        ]);
+    }
 }

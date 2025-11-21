@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Tag, User, Store } from "lucide-react";
 import api from "../api";
 
+
 import BuyerNavbar from "../components/BuyerNavbar";
 
 export default function ProductDetails() {
@@ -31,6 +32,7 @@ export default function ProductDetails() {
         <BuyerNavbar />
         
     <div className="flex flex-col md:flex-row gap-10 p-8 max-w-6xl mx-auto">
+
         
       {/* LEFT — LARGE IMAGE */}
       <div className="w-full md:w-1/2">
