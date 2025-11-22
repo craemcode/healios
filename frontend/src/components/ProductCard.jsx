@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function ProductCard({ product }) {
   return (
     
-    <div className="bg-white rounded-xl shadow-md p-4 border hover:shadow-lg transitio max-w-xs mx-auto">
+    <div className="bg-white rounded-xl shadow-md p-4 border hover:shadow-lg transition">
       <img
         src={product.photo_url}
         alt={product.name}
