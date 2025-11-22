@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Tag, User, Store } from "lucide-react";
+import { Tag, User, Store, CheckCircle, XCircle } from "lucide-react";
 import api from "../api";
 
 
@@ -48,6 +48,22 @@ export default function ProductDetails() {
 
         {/* Product Name */}
         <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
+
+          {/* Stock Status */}
+          <div className="flex items-center text-md gap-3">
+            {product.stock > 0 ? (
+              <>
+                <CheckCircle className="text-green-500" />
+                <span className="text-green-600 italic">Available for purchase</span>
+              </>
+            ) : (
+              <>
+                <XCircle className="text-gray-400" />
+                <span className="text-gray-500 italic">This product is not in stock</span>
+              </>
+            )}
+          </div>
+
 
         {/* Price */}
         <div className="flex items-center text-2xl font-semibold text-orange-500 gap-3">

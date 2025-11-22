@@ -11,29 +11,32 @@ import SellerHome from './pages/SellerHome';
 import ProductDetails from './pages/ProductDetails';
 import SellerProducts from './pages/SellerProducts';
 import SellerProductEdit from './pages/SellerProductEdit';
+import { CartProvider } from './components/CartProvider';
 
 
 function App() {
   return(
-   <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-        {/* You will create these pages later */}
-        <Route path="/login" element={<Login/>} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="/buyer/home" element={<BuyerHome/>}/>
-        <Route path="seller/home" element={<SellerHome/>}/>
-        <Route path="seller/products" element={<SellerProducts/>}/>
-        <Route path="seller/products/:id" element={<SellerProductEdit/>}/>
-
-
-        <Route path="/product/:id" element={<ProductDetails/>}/>
+          {/* You will create these pages later */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/buyer/home" element={<BuyerHome />} />
+          <Route path="seller/home" element={<SellerHome />} />
+          <Route path="seller/products" element={<SellerProducts />} />
+          <Route path="seller/products/:id" element={<SellerProductEdit />} />
 
 
-        <Route path="/about" element={<h1>About Us</h1>} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/product/:id" element={<ProductDetails />} />
+
+
+          <Route path="/about" element={<h1>About Us</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider >
   );
 }
 
