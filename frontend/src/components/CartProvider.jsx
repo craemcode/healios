@@ -8,6 +8,9 @@ export function CartProvider({ children }) {
 
     const toggleCart = () => setIsOpen(prev => !prev);
 
+
+
+    
     const addItem = (product, qty) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id);
