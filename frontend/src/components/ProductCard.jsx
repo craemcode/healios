@@ -1,6 +1,27 @@
 import { Link } from "react-router-dom";
+import { User } from "lucide-react";
 
 export default function ProductCard({ product }) {
+  
+  const formatPrice = (price) => {
+  const [dollars, cents] = Number(price)
+    .toFixed(2)
+    .split(".");
+
+  return { 
+    dollars: Number(dollars).toLocaleString(), 
+    cents 
+  };
+};
+
+const { dollars, cents } = formatPrice(product.price);
+
+  
+  
+  
+  
+  
+  
   return (
     
     <div className="bg-white rounded-xl shadow-md p-4 border hover:shadow-lg transition">
@@ -16,11 +37,13 @@ export default function ProductCard({ product }) {
       >
         {product.name}
       </Link> 
-
-      <p className="text-sm text-gray-600 mb-1"> {product.seller?.name}</p>
+     <div className="flex items-center text-gray-600 text-sm gap-3">
+          <User className="text-gray-400" />
+          {product.seller?.name}
+        </div>
 
       <p className="text-orange-600 font-bold text-lg mt-2">
-        $ {product.price}
+        $ {dollars}.<sup className="text- ">{cents}</sup>
       </p>
     </div>
   );
