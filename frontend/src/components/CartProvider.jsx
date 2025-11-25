@@ -8,6 +8,9 @@ export function CartProvider({ children }) {
 
     const toggleCart = () => setIsOpen(prev => !prev);
 
+
+
+
     const addItem = (product, qty) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === product.id);
@@ -41,6 +44,18 @@ export function CartProvider({ children }) {
         setCart(prev => prev.filter(item => item.id !== productId));
     };
 
+    const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const vat = subtotal * 0.10;          // 10% VAT
+    const healiosFee = subtotal * 0.005;  // 0.5% fee
+    const total = subtotal + vat + healiosFee;
+
+
+
+
+
+
     return (
         <CartContext.Provider value={{
             cart,
@@ -48,7 +63,12 @@ export function CartProvider({ children }) {
             toggleCart,
             addItem,
             updateQuantity,
-            removeItem
+            cartCount,
+            removeItem,
+            vat,
+            healiosFee,
+            total,
+            subtotal,
         }}>
             {children}
         </CartContext.Provider>

@@ -5,6 +5,8 @@ import BuyerSidebar from "../components/BuyerSidebar";
 import BuyerNavbar from "../components/BuyerNavbar";
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
+import BasketButton from "../components/BasketButton";
+import CartSidebar from "../components/CartSidebar";
 
 
 export default function BuyerHome() {
@@ -41,6 +43,7 @@ export default function BuyerHome() {
       <div className="flex-1 flex flex-col">
         
         <BuyerNavbar />
+        <BasketButton />
 
         <div className="p-6">
           
@@ -63,6 +66,7 @@ export default function BuyerHome() {
 
         </div>
       </div>
+     <CartSidebar />
     </div>
   );
   

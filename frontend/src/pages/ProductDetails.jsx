@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Tag, User, Store, CheckCircle, XCircle } from "lucide-react";
 import api from "../api";
+import AddToCartModal from "../components/AddToCartModal";
+import BasketButton from "../components/BasketButton";
+import CartSidebar from "../components/CartSidebar";
 
 
 import BuyerNavbar from "../components/BuyerNavbar";
@@ -10,6 +13,8 @@ export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  //add to cart modal function
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     api.get(`/products/${id}`)
@@ -26,6 +31,12 @@ export default function ProductDetails() {
   if (!product) {
     return <div className="text-center p-10 text-red-600">Product not found</div>;
   }
+
+  
+
+
+
+
 
   return (
     <div>
@@ -48,6 +59,8 @@ export default function ProductDetails() {
 
         {/* Product Name */}
         <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
+
+        <BasketButton />
 
           {/* Stock Status */}
           <div className="flex items-center text-md gap-3">
@@ -90,8 +103,28 @@ export default function ProductDetails() {
             {product.description || "No description provided."}
           </p>
         </div>
+          <button
+            disabled={product.current_stock === 0}
+            onClick={() => setShowModal(true)}
+            className={`px-6 py-3 rounded-xl text-white font-semibold 
+        transition-all duration-200
+        ${product.current_stock === 0
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-orange-500 hover:bg-orange-600"}
+                `}
+          >
+            {product.current_stock === 0 ? "Out of Stock" : "Add to Cart"}
+          </button>
+
+
+          <AddToCartModal
+            product={product}
+            show={showModal}
+            onClose={() => setShowModal(false)}
+          />
 
       </div>
+      <CartSidebar />
     </div>
     </div>
   );
