@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
-
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +51,17 @@ Route::middleware('auth:sanctum')->group(function (){
     //seller routes
     Route::get('/seller/stats',[SellerController::class, 'stats']);
     Route::get('/seller/products',[SellerController::class, 'products']);
+
+
+    //order management routes.
+    // Buyer creates an order
+    Route::post('/orders', [OrderController::class, 'store']);
+
+    // Buyer views their orders
+    Route::get('/orders', [OrderController::class, 'index']);
+
+    // Buyer views single order
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
 
 
 
