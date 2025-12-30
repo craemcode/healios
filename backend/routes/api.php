@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/seller/products',[SellerController::class, 'products']);
     Route::get('/seller/orders', [SellerController::class, 'orders']);
     Route::get('/seller/orders/{subOrder}/items', [SellerController::class, 'orderItems']);
+    Route::post('/seller/orders/{subOrder}/ship', [SellerController::class, 'ship']);
 
     //order management routes.
     // Buyer creates an order

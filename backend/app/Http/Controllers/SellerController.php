@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SubOrder;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
+
+
 
 class SellerController extends Controller
 {
@@ -66,5 +69,63 @@ class SellerController extends Controller
         'items' => $items
     ]);
     }
-    
+
+
+    public function ship($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $subOrder = SubOrder::where('id', $id)
+                ->where('seller_id', auth()->id())
+                ->firstOrFail();
+
+            // Prevent invalid transitions
+            if ($subOrder->status !== 'processing') {
+                return response()->json([
+                    'message' => 'Order cannot be shipped in its current state'
+                ], 400);
+            }
+
+            // 1. Mark suborder as shipped
+            $subOrder->update([
+                'status' => 'shipped',
+                'shipped_at' => now(),
+            ]);
+
+            // 2. Recalculate main order fulfillment state
+            $order = $subOrder->order;
+
+            $totalSubOrders = $order->subOrders()->count();
+            $shippedSubOrders = $order->subOrders()
+                ->whereIn('status', ['shipped', 'delivered'])
+                ->count();
+
+            if ($shippedSubOrders === $totalSubOrders) {
+                $order->update([
+                    'status' => 'fulfilled'
+                ]);
+            } else {
+                $order->update([
+                    'status' => 'partially_fulfilled'
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Order marked as shipped',
+                'sub_order' => $subOrder,
+                'order_status' => $order->status
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+        
 }
