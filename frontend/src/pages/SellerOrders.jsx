@@ -78,6 +78,17 @@ export default function SellerOrders() {
                 <p className="text-orange-600 font-semibold mt-1">
                   Earnings: ${order.seller_earnings}
                 </p>
+                {order.order.status === "pending_payment" && (
+                  <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 text-gray-600 font-bold text-xs">
+                      !
+                    </span>
+                    <span className="italic font-bold">
+                      Awaiting payment
+                    </span>
+                  </div>
+                )}
+
               </div>
             </div>
 
