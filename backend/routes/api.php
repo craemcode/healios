@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/seller/stats',[SellerController::class, 'stats']);
     Route::get('/seller/products',[SellerController::class, 'products']);
 
-
+    
     //order management routes.
     // Buyer creates an order
     Route::post('/orders', [OrderController::class, 'store']);

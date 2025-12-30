@@ -14,8 +14,11 @@ class SubOrder extends Model
     protected $fillable = [
         'order_id',
         'seller_id',
+        'seller_order_number',
         'status',
         'subtotal',
+        'commission',
+        'seller_earnings'
     ];
 
     /* =========================

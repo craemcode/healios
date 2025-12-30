@@ -15,12 +15,12 @@ class OrderController extends Controller
     {
         $request->validate([
         'items' => 'required|array|min:1',
-        'items.*.product_id' => 'required|exists:products,id',
-        'items.*.quantity' => 'required|integer|min:1',
+        'items.*.id' => 'required|exists:products,id',
+        'items.*.qty' => 'required|integer|min:1',
     ]);
 
     $buyer = $request->user();
-
+   
     DB::beginTransaction();
 
     try {
@@ -28,34 +28,51 @@ class OrderController extends Controller
         // 1. Load products
         $products = Product::whereIn(
             'id',
-            collect($request->items)->pluck('product_id')
+            collect($request->items)->pluck('id')
         )->lockForUpdate()->get();
 
         // 2. Validate stock
         foreach ($request->items as $item) {
-            $product = $products->firstWhere('id', $item['product_id']);
+            $product = $products->firstWhere('id', $item['id']);
 
-            if ($product->current_stock < $item['quantity']) {
+            if ($product->current_stock < $item['qty']) {
                 throw new \Exception("Insufficient stock for {$product->name}");
             }
         }
 
         // 3. Create parent order (buyer order)
         $order = Order::create([
-            'buyer_id' => $buyer->id,
-            'status' => 'pending',
+            'user_id' => $buyer->id,
+            'order_number'=> rand(1,10000),
+            'status' => 'pending_payment',
             'subtotal' => 0,
             'vat' => 0,
             'healios_fee' => 0,
             'total' => 0,
         ]);
 
+        //generating the order number
+        $year = now()->year;
+
+        //TECHNICAL DEBT
+        $orderNumber = sprintf(
+            'HL-%s-%06d',
+            $year,
+            $order->id
+        );
+
+        $order->update([
+            'order_number' => $orderNumber
+        ]);
+
+
         // 4. Group items by seller
         $itemsBySeller = collect($request->items)->groupBy(function ($item) use ($products) {
-            return $products->firstWhere('id', $item['product_id'])->user_id;
+            return $products->firstWhere('id', $item['id'])->user_id;
         });
 
         $subtotal = 0;
+        
 
         foreach ($itemsBySeller as $sellerId => $items) {
 
@@ -63,29 +80,53 @@ class OrderController extends Controller
             $subOrder = SubOrder::create([
                 'order_id' => $order->id,
                 'seller_id' => $sellerId,
-                'status' => 'pending',
+                'seller_order_number'=> rand(10000,100000),
+                'status' => 'processing',
                 'subtotal' => 0,
+                'commission' => 0,
+                'seller_earnings' =>0
             ]);
 
-            foreach ($items as $item) {
-                $product = $products->firstWhere('id', $item['product_id']);
+            
+             $subOrderNumber = sprintf(
+            'HLS-%s-%06d',
+            $year,
+            $subOrder->id
+        );
 
-                $lineTotal = $product->price * $item['quantity'];
+        $subOrder->update([
+            'seller_order_number' => $subOrderNumber
+        ]);
+
+
+
+
+
+            foreach ($items as $item) {
+                $product = $products->firstWhere('id', $item['id']);
+
+                $lineTotal = $product->price * $item['qty'];
+                $commission = $lineTotal * 0.1;
+                $seller_earnings = $lineTotal - $commission;
 
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'sub_order_id' => $subOrder->id,
+                    //'sub_order_id' => $subOrder->id,
+                    'seller_id' => $sellerId,
                     'product_id' => $product->id,
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $product->price,
-                    'line_total' => $lineTotal,
+                    'quantity' => $item['qty'],
+                    'price' => $product->price,
+                    'total' => $lineTotal,
                 ]);
 
                 // Deduct stock
-                $product->decrement('current_stock', $item['quantity']);
+                $product->decrement('stock', $item['qty']);
 
                 $subtotal += $lineTotal;
+                $subOrder->increment('commission', $commission);
+                $subOrder->increment('seller_earnings',$seller_earnings);
                 $subOrder->increment('subtotal', $lineTotal);
+
             }
         }
 

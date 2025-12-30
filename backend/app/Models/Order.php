@@ -10,7 +10,8 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'buyer_id',
+        'user_id',
+        'order_number',
         'status',
         'subtotal',
         'vat',
@@ -25,7 +26,7 @@ class Order extends Model
     // Buyer who placed the order
     public function buyer()
     {
-        return $this->belongsTo(User::class, 'buyer_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Seller-specific sub-orders
