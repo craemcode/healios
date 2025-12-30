@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SubOrder;
+use App\Models\OrderItem;
 
 class SellerController extends Controller
 {
@@ -28,4 +30,41 @@ class SellerController extends Controller
             "products" => $products,
         ]);
     }
+
+    public function orders()
+    {
+        $sellerId = auth()->id();
+
+        $subOrders = SubOrder::with([
+                'order.buyer',
+            ])
+            ->where('seller_id', $sellerId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'orders' => $subOrders,
+        ]);
+    }
+
+    public function orderItems($subOrderId)
+    {
+       $sellerId = auth()->id();
+
+    $subOrder = SubOrder::where('id', $subOrderId)
+        ->where('seller_id', $sellerId)
+        ->firstOrFail();
+
+    $items = OrderItem::with(['product'])
+        ->where('order_id', $subOrder->order_id)
+        ->whereHas('product', function ($query) use ($sellerId) {
+            $query->where('seller_id', $sellerId);
+        })
+        ->get();
+
+    return response()->json([
+        'items' => $items
+    ]);
+    }
+    
 }
