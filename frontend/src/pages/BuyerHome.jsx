@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import api from "../api";
 
 import BuyerSidebar from "../components/BuyerSidebar";
@@ -7,6 +8,7 @@ import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 import BasketButton from "../components/BasketButton";
 import CartSidebar from "../components/CartSidebar";
+import BuyerOrders from "./BuyerOrders";
 
 
 export default function BuyerHome() {
@@ -60,9 +62,7 @@ export default function BuyerHome() {
             </>
           )}
 
-          {current === "orders" && (
-            <h2 className="text-lg font-semibold text-gray-700">My Orders (coming soon)</h2>
-          )}
+          {current === "orders" && <BuyerOrders/>}
 
         </div>
       </div>

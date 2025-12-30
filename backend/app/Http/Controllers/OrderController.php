@@ -161,10 +161,28 @@ class OrderController extends Controller
     public function index()
     {
         // buyer orders list
+        $orders = Order::where('user_id', auth()->id())
+        ->latest()
+        ->select('id', 'order_number', 'status', 'total', 'created_at')
+        ->get();
+
+        return response()->json([
+            'orders' => $orders
+        ]);
     }
 
     public function show($id)
     {
         // single order details
+        $order = Order::with([
+        'items.product',
+        'subOrders.seller'
+    ])
+    ->where('user_id', auth()->id())
+    ->findOrFail($id);
+
+    return response()->json([
+        'order' => $order
+    ]);
     } 
 }

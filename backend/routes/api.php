@@ -59,10 +59,10 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/orders', [OrderController::class, 'store']);
 
     // Buyer views their orders
-    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('buyer/orders', [OrderController::class, 'index']);
 
     // Buyer views single order
-    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::get('buyer/orders/{id}', [OrderController::class, 'show']);
 
 
 
