@@ -18,7 +18,7 @@ class PaymentController extends Controller
                       ->where('user_id', auth()->id())
                       ->firstOrFail();
 
-        if ($order->status !== 'pending') {
+        if ($order->status !== 'pending_payment') {
             return response()->json([
                 'message' => 'Order is not eligible for payment'
             ], 400);

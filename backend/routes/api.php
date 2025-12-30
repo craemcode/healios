@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/seller/stats',[SellerController::class, 'stats']);
     Route::get('/seller/products',[SellerController::class, 'products']);
 
-    
+
     //order management routes.
     // Buyer creates an order
     Route::post('/orders', [OrderController::class, 'store']);
@@ -63,6 +64,11 @@ Route::middleware('auth:sanctum')->group(function (){
     // Buyer views single order
     Route::get('/orders/{id}', [OrderController::class, 'show']);
 
+
+
+    //Payment Management routes
+    Route::post('/payments/initiate', [PaymentController::class, 'initiate']);
+    Route::post('/payments/confirm', [PaymentController::class, 'confirm']);
 
 
     //logout route
