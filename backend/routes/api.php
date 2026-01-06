@@ -66,6 +66,9 @@ Route::middleware('auth:sanctum')->group(function (){
     // Buyer views single order
     Route::get('buyer/orders/{id}', [OrderController::class, 'show']);
 
+    //buyer marks order as delivered
+    Route::post('/buyer/suborders/{subOrder}/deliver', [OrderController::class, 'confirmDelivery']);
+
 
 
     //Payment Management routes

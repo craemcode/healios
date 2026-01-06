@@ -161,7 +161,10 @@ class OrderController extends Controller
     public function index()
     {
         // buyer orders list
-        $orders = Order::where('user_id', auth()->id())
+        $orders = Order::with([
+            'subOrders',
+        ])
+        ->where('user_id', auth()->id())
         ->latest()
         ->select('id', 'order_number', 'status', 'total', 'created_at')
         ->get();
@@ -185,4 +188,38 @@ class OrderController extends Controller
         'order' => $order
     ]);
     } 
+
+    public function confirmDelivery($id)
+    {
+        $subOrder = SubOrder::where('id', $id)
+            ->whereHas('order', fn ($q) =>
+                $q->where('user_id', auth()->id())
+            )
+            ->firstOrFail();
+
+        if ($subOrder->status !== 'shipped') {
+            return response()->json([
+                'message' => 'Order cannot be delivered'
+            ], 400);
+        }
+
+
+       DB::transaction(function () use ($subOrder) {
+            $subOrder->update(['status' => 'delivered']);
+
+            $order = $subOrder->order;
+
+            if ($order->subOrders()->where('status', '!=', 'delivered')->count() === 0) {
+                $order->update(['status' => 'delivered']);
+            }
+        }); 
+
+        return response()->json([
+            'message' => 'Delivery confirmed'
+        ]);
+    }
+
+
+
+
 }
