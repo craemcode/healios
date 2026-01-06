@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
-
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +52,28 @@ Route::middleware('auth:sanctum')->group(function (){
     //seller routes
     Route::get('/seller/stats',[SellerController::class, 'stats']);
     Route::get('/seller/products',[SellerController::class, 'products']);
+    Route::get('/seller/orders', [SellerController::class, 'orders']);
+    Route::get('/seller/orders/{subOrder}/items', [SellerController::class, 'orderItems']);
+    Route::post('/seller/orders/{subOrder}/ship', [SellerController::class, 'ship']);
 
+    //order management routes.
+    // Buyer creates an order
+    Route::post('/orders', [OrderController::class, 'store']);
+
+    // Buyer views their orders
+    Route::get('buyer/orders', [OrderController::class, 'index']);
+
+    // Buyer views single order
+    Route::get('buyer/orders/{id}', [OrderController::class, 'show']);
+
+    //buyer marks order as delivered
+    Route::post('/buyer/suborders/{subOrder}/deliver', [OrderController::class, 'confirmDelivery']);
+
+
+
+    //Payment Management routes
+    Route::post('/payments/initiate', [PaymentController::class, 'initiate']);
+    Route::post('/payments/confirm', [PaymentController::class, 'confirm']);
 
 
     //logout route

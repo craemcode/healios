@@ -1,9 +1,12 @@
+import {Navigate, useNavigate} from "react-router-dom"
 import { useCart } from "./CartProvider";
 import { X, Trash, Plus, Minus } from "lucide-react";
 
 export default function CartSidebar() {
     const { cart, isOpen, toggleCart, updateQuantity, 
             removeItem, subtotal, healiosFee, vat, total } = useCart();
+
+    const navigate = useNavigate();
 
     return (
         <div
@@ -100,7 +103,7 @@ export default function CartSidebar() {
                     <span>$ {total.toLocaleString()}</span>
                 </div>
                     <button
-                        onClick={() => console.log("Proceeding to checkout…")}
+                        onClick={() => navigate("/checkout")}
                         className="w-full bg-orange-600 text-white py-3 mt-4 rounded-lg font-semibold hover:bg-orange-700 transition-all"
                     >
                         Proceed to Checkout
