@@ -9,6 +9,7 @@ import FilterBar from "../components/FilterBar";
 import BasketButton from "../components/BasketButton";
 import CartSidebar from "../components/CartSidebar";
 import BuyerOrders from "./BuyerOrders";
+import { Link } from "react-router-dom";
 
 
 export default function BuyerHome() {
@@ -62,7 +63,7 @@ export default function BuyerHome() {
             </>
           )}
 
-          {current === "orders" && <BuyerOrders/>}
+         
 
         </div>
       </div>

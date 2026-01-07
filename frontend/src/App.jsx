@@ -12,6 +12,7 @@ import ProductDetails from './pages/ProductDetails';
 import SellerProducts from './pages/SellerProducts';
 import SellerProductEdit from './pages/SellerProductEdit';
 import Checkout from './pages/Checkout';
+import BuyerOrders from './pages/BuyerOrders';
 import { CartProvider } from './components/CartProvider';
 
 
@@ -25,6 +26,7 @@ function App() {
           {/* You will create these pages later */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/buyer/orders" element={<BuyerOrders/>}/>
           <Route path="/buyer/home" element={<BuyerHome />} />
           <Route path="seller/home" element={<SellerHome />} />
           <Route path="seller/products" element={<SellerProducts />} />

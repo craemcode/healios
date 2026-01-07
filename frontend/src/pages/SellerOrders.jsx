@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import { SellerOrderActions } from "../components/SellerOrderActions";
 import { formatDate } from "../utils/date";
+import { dollarAmount } from "../utils/dollarAmount"
 
 export default function SellerOrders() {
   const [orders, setOrders] = useState([]);
@@ -76,7 +77,7 @@ export default function SellerOrders() {
                 </span>
 
                 <p className="text-orange-600 font-semibold mt-1">
-                  Earnings: ${order.seller_earnings}
+                  Earnings: ${dollarAmount(order.seller_earnings)}
                 </p>
                 {order.order.status === "pending_payment" && (
                   <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
@@ -114,7 +115,7 @@ export default function SellerOrders() {
                         </p>
                       </div>
                       <p className="font-semibold">
-                        ${item.total}
+                        ${dollarAmount(item.total)}
                       </p>
                     </div>
                   ))
