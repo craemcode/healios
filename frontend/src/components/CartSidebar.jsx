@@ -1,6 +1,7 @@
 import {Navigate, useNavigate} from "react-router-dom"
 import { useCart } from "./CartProvider";
 import { X, Trash, Plus, Minus } from "lucide-react";
+import { dollarAmount } from "../utils/dollarAmount";
 
 export default function CartSidebar() {
     const { cart, isOpen, toggleCart, updateQuantity, 
@@ -72,7 +73,7 @@ export default function CartSidebar() {
 
                         <div className="flex justify-between text-sm font-bold text-orange-600">
                             <span>Total</span>
-                            <span>$ {(item.qty * item.price).toLocaleString()}</span>
+                            <span>$ {dollarAmount(item.qty * item.price)}</span>
                         </div>
                     </div>
                 ))}
@@ -83,24 +84,24 @@ export default function CartSidebar() {
 
                 <div className="flex justify-between text-gray-600 text-sm">
                     <span>Subtotal</span>
-                    <span>$ {subtotal.toLocaleString()}</span>
+                    <span>$ {dollarAmount(subtotal)}</span>
                 </div>
 
                 <div className="flex justify-between text-gray-600 text-sm">
                     <span>VAT (10%)</span>
-                    <span>$ {vat.toLocaleString()}</span>
+                    <span>$ {dollarAmount(vat)}</span>
                 </div>
 
                 <div className="flex justify-between text-gray-600 text-sm">
                     <span>Healios Fee (0.5%)</span>
-                    <span>$ {healiosFee.toLocaleString()}</span>
+                    <span>$ {dollarAmount(healiosFee)}</span>
                 </div>
 
                 <div className="border-t my-2"></div>
 
                 <div className="flex justify-between text-lg font-bold text-orange-600">
                     <span>Total</span>
-                    <span>$ {total.toLocaleString()}</span>
+                    <span>$ {dollarAmount(total)}</span>
                 </div>
                     <button
                         onClick={() => navigate("/checkout")}

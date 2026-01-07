@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "../utils/date";
+import { dollarAmount } from "../utils/dollarAmount";
 import api from "../api";
 
 export default function BuyerOrders() {
@@ -105,7 +106,7 @@ export default function BuyerOrders() {
 
 
                             <span className="font-semibold text-gray-800">
-                                $ {order.total}
+                                $ {dollarAmount(order.total)}
                             </span>
 
                            
@@ -170,7 +171,7 @@ export default function BuyerOrders() {
                                     </div>
 
                                     <div className="font-semibold">
-                                        $ {item.total}
+                                        $ {dollarAmount(item.total)}
                                     </div>
                                 </div>
                     )})}
