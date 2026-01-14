@@ -13,6 +13,12 @@ export default function BuyerOrders() {
     const [orderItems, setOrderItems] = useState({});
     const [loadingOrderId, setLoadingOrderId] = useState(null);
 
+    //review state management
+    const [reviewTarget, setReviewTarget] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
     useEffect(() => {
         api.get("/buyer/orders")
             .then(res => setOrders(res.data.orders))
@@ -138,7 +144,7 @@ export default function BuyerOrders() {
                                     const subOrder = order.sub_orders.find(
                                         so => so.seller_id === item.seller_id
                                     );
-                                    console.log("order:", order);
+                                    
                                     return (
                                         <div
                                             key={item.id}
@@ -184,6 +190,15 @@ export default function BuyerOrders() {
                                                         Confirm delivery
                                                     </button>
                                                 )}
+
+                                                {subOrder?.status === "delivered" && (
+                                                    <button
+                                                        onClick={() => setReviewTarget(item)}
+                                                        className="mt-2 text-sm text-orange-600 hover:underline font-medium"
+                                                    >
+                                                        Leave a review
+                                                    </button>
+                                                )}
                                             </div>
 
                                             <div className="font-semibold">
@@ -196,6 +211,99 @@ export default function BuyerOrders() {
                         )}
                     </div>
                 ))}
+                    {reviewTarget && (
+                        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                            <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 relative">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-bold text-gray-800">
+                                        Review {reviewTarget.product.name}
+                                    </h2>
+                                    <button
+                                        onClick={() => {
+                                            setReviewTarget(null);
+                                            setRating(0);
+                                            setComment("");
+                                        }}
+                                        className="text-gray-400 hover:text-gray-600"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                {/* Star Rating */}
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 mb-2">
+                                        Your rating
+                                    </p>
+                                    <div className="flex gap-2">
+                                        {[1, 2, 3, 4, 5].map(star => (
+                                            <button
+                                                key={star}
+                                                onClick={() => setRating(star)}
+                                                className={`text-2xl transition-colors ${rating >= star ? "text-orange-500" : "text-gray-300"
+                                                    }`}
+                                            >
+                                                ★
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Comment */}
+                                <div className="mb-6">
+                                    <p className="text-sm font-medium text-gray-600 mb-2">
+                                        Your review
+                                    </p>
+                                    <textarea
+                                        value={comment}
+                                        onChange={e => setComment(e.target.value)}
+                                        rows={4}
+                                        placeholder="Share your experience with this product…"
+                                        className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                                    />
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setReviewTarget(null)}
+                                        className="flex-1 border border-gray-300 py-2 rounded-lg text-gray-600 hover:bg-gray-50"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        disabled={rating === 0 || submitting}
+                                        onClick={async () => {
+                                            try {
+                                                setSubmitting(true);
+
+                                                await api.post(`/buyer/order-items/${reviewTarget.sub_order_id}/review`, {
+                                                    product_id: reviewTarget.product.id,
+                                                    sub_order_id: reviewTarget.sub_order_id,
+                                                    rating,
+                                                    comment,
+                                                });
+
+                                                setReviewTarget(null);
+                                                setRating(0);
+                                                setComment("");
+                                            } catch (err) {
+                                                console.error(err);
+                                                alert("Failed to submit review");
+                                            } finally {
+                                                setSubmitting(false);
+                                            }
+                                        }}
+                                        className="flex-1 bg-orange-600 text-white py-2 rounded-lg font-semibold hover:bg-orange-700 disabled:opacity-50"
+                                    >
+                                        {submitting ? "Submitting..." : "Submit Review"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>)}  
             </div>
             </div>
         </div>
