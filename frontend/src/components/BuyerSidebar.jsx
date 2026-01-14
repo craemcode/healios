@@ -11,7 +11,7 @@ export default function BuyerSidebar({ current, setCurrent }) {
           className={`w-full text-left p-2 rounded-lg font-medium 
             ${current === "home" ? "bg-orange-100 text-orange-700" : "hover:bg-gray-100"}`}
         >
-          Products
+          <Link to ={`/buyer/home`}>Products</Link>
         </button>
 
         <button
@@ -19,7 +19,7 @@ export default function BuyerSidebar({ current, setCurrent }) {
           className={`w-full text-left p-2 rounded-lg font-medium 
             ${current === "orders" ? "bg-orange-100 text-orange-700" : "hover:bg-gray-100"}`}
         >
-          My Orders
+         <Link to ={`/buyer/orders`}>My Orders</Link>
         </button>
       </nav>
     </div>

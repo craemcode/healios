@@ -1,4 +1,5 @@
 import { useCart } from "../components/CartProvider";
+import { dollarAmount } from "../utils/dollarAmount";
 
 export default function CartReview({ onNext }) {
   const { cart, total, subtotal, healiosFee, vat } = useCart();
@@ -25,7 +26,7 @@ export default function CartReview({ onNext }) {
               </p>
             </div>
             <p className="font-semibold">
-              $ {item.qty * item.price}
+              $ {dollarAmount(item.qty * item.price)}
             </p>
           </div>
         ))}
@@ -35,19 +36,19 @@ export default function CartReview({ onNext }) {
       <div className="border-t mt-4 pt-4 space-y-2">
         <p className="flex justify-between text-sm">
           <span>Subtotal</span>
-          <span>$ {subtotal}</span>
+          <span>$ {dollarAmount(subtotal)}</span>
         </p>
         <p className="flex justify-between text-sm">
           <span>VAT (10%)</span>
-          <span>$ {vat}</span>
+          <span>$ {dollarAmount(vat)}</span>
         </p>
         <p className="flex justify-between text-sm">
           <span>Healios Fee (0.5%)</span>
-          <span>$ {healiosFee}</span>
+          <span>$ {dollarAmount(healiosFee)}</span>
         </p>
         <p className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span>$ {total}</span>
+          <span>$ {dollarAmount(total)}</span>
         </p>
       </div>
 
