@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,8 +70,13 @@ Route::middleware('auth:sanctum')->group(function (){
     //buyer marks order as delivered
     Route::post('/buyer/suborders/{subOrder}/deliver', [OrderController::class, 'confirmDelivery']);
 
+    //buyer review route
+     Route::post('/buyer/order-items/{orderItem}/review', [ReviewController::class, 'store']);
 
 
+
+
+     
     //Payment Management routes
     Route::post('/payments/initiate', [PaymentController::class, 'initiate']);
     Route::post('/payments/confirm', [PaymentController::class, 'confirm']);
