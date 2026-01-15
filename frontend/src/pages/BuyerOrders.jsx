@@ -279,8 +279,8 @@ export default function BuyerOrders() {
                                         onClick={async () => {
                                             try {
                                                 setSubmitting(true);
-
-                                                await api.post(`/buyer/order-items/${reviewTarget.sub_order_id}/review`, {
+                                                //console.log("target:",reviewTarget)
+                                                await api.post(`/buyer/order-items/${reviewTarget.id}/review`, {
                                                     product_id: reviewTarget.product.id,
                                                     sub_order_id: reviewTarget.sub_order_id,
                                                     rating,

@@ -28,7 +28,7 @@ class ReviewController extends Controller
 
         // 1. Ensure item belongs to buyer
         abort_if(
-            $orderItem->order->buyer_id !== $buyerId,
+            $orderItem->order->user_id !== $buyerId,
             403,
             'Unauthorized'
         );
