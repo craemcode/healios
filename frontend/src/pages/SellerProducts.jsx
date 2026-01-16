@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { SellerNavbar } from "../components/SellerNavbar";
+import { SellerProductReviewsModal } from "../components/SellerProductReviewsModal";
 import { PackagePlus, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -11,6 +12,11 @@ export default function SellerProducts() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [qty, setQty] = useState("");
     const [cost, setCost] = useState("");
+
+    //review states
+    const [showReviewsModal, setShowReviewsModal] = useState(false);
+    const [reviews, setReviews] = useState([]);
+    const [loadingReviews, setLoadingReviews] = useState(false);
     
     const navigate = useNavigate();
 
@@ -50,6 +56,22 @@ export default function SellerProducts() {
             .catch(err => console.log(err));
     };
 
+    const openReviews = (product) => {
+            setSelectedProduct(product);
+            setShowReviewsModal(true);
+            setLoadingReviews(true);
+
+            api.get(`/products/${product.id}/reviews`)
+                .then(res => setReviews(res.data.reviews))
+                .catch(() => setReviews([]))
+                .finally(() => setLoadingReviews(false));
+    };
+
+
+
+
+
+
     return (
         <div>
             <SellerNavbar />
@@ -63,9 +85,10 @@ export default function SellerProducts() {
                             <tr className="border-b">
                                 <th className="py-3 px-2">Name</th>
                                 <th className="py-3 px-2">Category</th>
-                                <th className="py-3 px-2">Price (KES)</th>
+                                <th className="py-3 px-2">Price </th>
                                 <th className="py-3 px-2">Stock</th>
                                 <th className="py-3 px-2 text-center">Actions</th>
+                                <th className="py-3 px-2">Reviews</th>
                             </tr>
                         </thead>
 
@@ -90,6 +113,14 @@ export default function SellerProducts() {
                                             className="flex items-center gap-1 text-orange-600 hover:underline"
                                         >
                                             <PackagePlus size={16} /> Restock
+                                        </button>
+                                    </td>
+                                    <td className="py-3 px-2 ">
+                                        <button
+                                            onClick={() => openReviews(product)}
+                                            className="text-orange-600 hover:underline font-medium"
+                                        >
+                                           See Reviews
                                         </button>
                                     </td>
                                 </tr>
@@ -161,6 +192,15 @@ export default function SellerProducts() {
                     </motion.div>
                 </div>
             )}
+            <SellerProductReviewsModal
+                show={showReviewsModal}
+                onClose={() => setShowReviewsModal(false)}
+                product={selectedProduct}
+                reviews={reviews}
+                loading={loadingReviews}
+            />
+
+
         </div>
     );
 }
