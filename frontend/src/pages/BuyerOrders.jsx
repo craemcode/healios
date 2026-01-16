@@ -48,7 +48,7 @@ export default function BuyerOrders() {
                 [orderId]: res.data.order.items
             }));
 
-            //console.log(orderItems)
+            
         } catch (err) {
             console.error(err);
         } finally {

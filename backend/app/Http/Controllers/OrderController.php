@@ -111,7 +111,7 @@ class OrderController extends Controller
 
                     OrderItem::create([
                         'order_id' => $order->id,
-                        //'sub_order_id' => $subOrder->id,
+                        'sub_order_id' => $subOrder->id,
                         'seller_id' => $sellerId,
                         'product_id' => $product->id,
                         'quantity' => $item['qty'],

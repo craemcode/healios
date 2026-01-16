@@ -1,4 +1,5 @@
 import { CheckCircle } from "lucide-react";
+import { Navigate } from "react-router-dom";
 
 export default function Confirmation() {
   return (
@@ -9,7 +10,7 @@ export default function Confirmation() {
         Your order has been successfully placed.
       </p>
 
-      <button className="bg-orange-600 text-white px-6 py-3 rounded-lg">
+      <button onClick={Navigate(`/buyer/orders`)} className="bg-orange-600 text-white px-6 py-3 rounded-lg">
         Track Order
       </button>
     </div>
