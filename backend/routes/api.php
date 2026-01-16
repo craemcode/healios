@@ -72,7 +72,8 @@ Route::middleware('auth:sanctum')->group(function (){
 
     //buyer review route
      Route::post('/buyer/order-items/{orderItem}/review', [ReviewController::class, 'store']);
-
+    //reviews for a single product
+    Route::get('/products/{id}/reviews',[ReviewController::class, 'index']);
 
 
 

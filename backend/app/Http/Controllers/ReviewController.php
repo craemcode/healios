@@ -64,7 +64,17 @@ class ReviewController extends Controller
     }
 
 
+    public function index($product_id)
+    {
+        $reviews = Review::with('buyer:id,name')
+        ->where('product_id', $product_id)
+        ->latest()
+        ->get();
 
+        return response()->json([
+            'reviews' => $reviews
+        ]);
+    }
 
 
 
